@@ -15,13 +15,13 @@ const columns = [
     { id: 'ogrenciAd', label: 'Ad', minWidth: 100, align: 'center'},
     { id: 'ogrenciSoyad', label: 'Soyad', minWidth: 100, align: 'center' },
     { id: 'universiteAdi', label: 'Üniversite', minWidth: 170, align: 'center'},
-    { id: 'ogrenciFakulte', label: 'Fakülte', minWidth: 170, align: 'center'},
-    { id: 'ogrenciBolum', label: 'Bölüm', minWidth: 170, align: 'center'},
-    { id: 'girisYil', label: 'Giriş Yılı', minWidth: 50, align: 'center'},
+    { id: 'ogrenciFakulte', label: 'Fakülte', minWidth: 150, align: 'center'},
+    { id: 'ogrenciBolum', label: 'Bölüm', minWidth: 150, align: 'center'},
+    { id: 'girisYil', label: 'Giriş Yılı', minWidth: 70, align: 'center'},
     { id: 'basvuruTur', label: 'Giriş Türü', minWidth: 70, align: 'center'},
-    { id: 'talepTarih', label: 'Tarih', minWidth: 50, align: 'center'},
-    { id: 'ogrenciMail', label: 'Öğrenci Mail', minWidth: 70, align: 'center'},
-    { id: 'detay', label: 'Detay', minWidth: 50, align: 'center'},
+    { id: 'talepTarih', label: 'Tarih', minWidth: 120, align: 'center'},
+    { id: 'ogrenciMail', label: 'Öğrenci Mail', minWidth: 60, align: 'center'},
+    { id: 'id', label: 'Detay', minWidth: 50, align: 'center'},
 ];
 
 const useStyles = makeStyles({
@@ -42,16 +42,19 @@ export default function ApplicationSelectionList() {
 
     const [rows,setRows] = React.useState([
         {ogrenciAd:'Adem', ogrenciSoyad:'Deneme',universiteAdi:'Fatih Sultan Mehmet Vakıf Üni.', ogrenciBolum:'bilgisayar müh.', girisYil:2015 ,
-       talepTarih:'2020-09-01',basvuruTur:'Diğer',ogrenciMail:'abc@gmail.com',ogrenciFakulte:'mühendislik fakültesi', detay:0},
+       talepTarih:'2020-09-01',basvuruTur:'Diğer',ogrenciMail:'abc@gmail.com',ogrenciFakulte:'mühendislik fakültesi', id:0},
 
     ]);
+
     React.useEffect(() => {
     axios.get('http://localhost:3004/basvurulistesi').then(response => {
         veriler = response.data          
-        console.log(response.data);
+        //console.log(response.data);
         setRows(veriler)
     }).catch(err => console.log(err));
 }, []);
+
+
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -94,7 +97,7 @@ export default function ApplicationSelectionList() {
                                         const value = row[column.id];
                                         return (
                                             <TableCell key={column.id} align={column.align}>
-                                                {column.id === "detay" ? returnButton(value) : value}
+                                                {column.id === "id" ? returnButton(value) : value}
                                             </TableCell>
                                         );
                                     })}

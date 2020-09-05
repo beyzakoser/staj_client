@@ -36,10 +36,12 @@ import MenuBookIcon from "@material-ui/icons/MenuBook";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import Link from "@material-ui/core/Link";
 import Copyright from '../components/Copyright'
-
+import {useHistory} from "react-router";
+import axios from 'axios'
+import lodash from 'lodash'
 
 const drawerWidth = 270;
-
+var veriler = [{},];
 const useStyles = makeStyles((theme) => ({
     root: {
         backgroundColor:'#f3efec',
@@ -158,52 +160,48 @@ function LessonEditPage() {
         </div>
     );
 
-    const obj = {
-        columns: [
-            { title: 'Ders Adı', field: 'dersadi' },
-            { title: 'Ders Kodu', field: 'derskodu' },
-            { title: 'Kredi', field: 'kredi' },
-            { title: 'Teori', field: 'teori' },
-            { title: 'Lab', field: 'lab' },
-
-        ],
-    }
-
     const [state, setState] = React.useState({
         columns: [
-            { title: 'Ders Adı', field: 'dersadi' },
-            { title: 'Ders Kodu', field: 'derskodu' },
+            { title: 'Ders Kodu', field: 'dersKodu' },
+            { title: 'Ders Adı', field: 'dersAd' },
             { title: 'Kredi', field: 'kredi' },
-            { title: 'Teori', field: 'teori' },
-            { title: 'Lab', field: 'lab' },
+            { title: 'Akts', field: 'akts' },
+            { title: 'Teori', field: 'teoriSaat' },
+            { title: 'Lab', field: 'labSaat' },
+            { title: 'Kontenjan', field: 'kontenjan' },
+            { title: 'Terori Online', field: 'teoriOnline' },
+            { title: 'Lab Online', field: 'labOnline' },
 
         ],
         data: [
-            { dersadi: 'Calculus I', derskodu: 'MAT227', kredi:"5", teori: '4', lab: '2'},
-            { dersadi: 'Calculus II', derskodu: 'MAT228', kredi:"5", teori: '4', lab: '2'},
-            { dersadi: 'Lineer Cebir', derskodu: 'MAT220', kredi:"4", teori: '4', lab: '0'},
-            { dersadi: 'Fizik I', derskodu: 'FZ102', kredi:"5", teori: '4', lab: '2'},
+
+            { dersKodu: 'MAT227', dersAd: "Calculus I", kredi: 2, akts: 7, teoriSaat: 4, labSaat: 2, kontenjan: 20, teoriOnline: 'evet', labOnline: 'evet' },
+
 
         ],
     });
+   
+    // React.useEffect(() => {
+    //     axios.get('http://localhost:3004/dersler').then(response => {
+    //         veriler = response.data          
+    //         setState({
+    //             columns: [
+    //                 { title: 'Ders Kodu', field: 'dersKodu' },
+    //                 { title: 'Ders Adı', field: 'dersAd' },
+    //                 { title: 'Kredi', field: 'kredi' },
+    //                 { title: 'Akts', field: 'akts' },
+    //                 { title: 'Teori', field: 'teoriSaat' },
+    //                 { title: 'Lab', field: 'labSaat' },
+    //                 { title: 'Kontenjan', field: 'kontenjan' },
+    //                 { title: 'Terori Online', field: 'teoriOnline' },
+    //                 { title: 'Lab Online', field: 'labOnline' },
 
-    /*{
-        columns: [
-            { title: 'Ders Adı', field: 'dersadi' },
-            { title: 'Ders Kodu', field: 'derskodu' },
-            { title: 'Kredi', field: 'kredi' },
-            { title: 'Teori', field: 'teori' },
-            { title: 'Lab', field: 'lab' },
-
-        ],
-        data: [
-            { dersadi: 'asdasd I', derskodu: 'MAT227', kredi:"5", teori: '4', lab: '2'},
-            { dersadi: 'Calculus II', derskodu: 'MAT228', kredi:"5", teori: '4', lab: '2'},
-            { dersadi: 'Lineer Cebir', derskodu: 'MAT220', kredi:"4", teori: '4', lab: '0'},
-            { dersadi: 'Fizik I', derskodu: 'FZ102', kredi:"5", teori: '4', lab: '2'},
-
-        ],
-    }*/
+    //             ],
+    //             data: response.data,
+    //         })
+            
+    //     }).catch(err => console.log(err));
+    // }, []);
 
     /*Bu kısım açılır buton olan kaydet içindir*/
     const [open, setOpen] = React.useState(true);
@@ -252,7 +250,7 @@ function LessonEditPage() {
         setOpen(false);
     };
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
+    const history = useHistory();
     /*Bu kısım açılır buton olan varsayılana dön içindir*/
     return (
         <div className={classes.root}>
@@ -402,7 +400,58 @@ function LessonEditPage() {
                                         <Button autoFocus variant="outlined" onClick={dialogClose} color="primary">
                                             İptal
                                         </Button>
-                                        <Button variant="outlined" onClick={dialogClose} color="primary" autoFocus>
+                                        <Button variant="outlined" 
+                                        //onClick={dialogClose} 
+                                        color="primary" autoFocus
+                                        // onClick={
+                                        //     () => {
+                                        //         //insert kısmı
+                                        //         var eklenenler = []
+                                        //         var guncellenecek = []
+                                            
+                                        //         Object.keys(state.data).forEach(key => {
+                                        //             if ((state.data)[key].id === undefined) {
+                                        //                 eklenenler.push((state.data)[key])
+                                        //             }
+                                        //         })
+                                        //         var obje = [{ inserts: eklenenler }]
+
+                                        //         //update kısmı
+                                        //         var serialized_Items_Prev = veriler.map(i => JSON.stringify(i));
+                                        //         var degisenler = (state.data).filter(i => !serialized_Items_Prev.includes(JSON.stringify(i)));
+                                        //         guncellenecek = degisenler.filter((e) => !(obje[0].inserts).includes(e));
+                                        //         var updated = { updates: guncellenecek } //update olanlar eklendi.
+                                        //         obje.push(updated)
+
+                                        //         //delete kısmı
+                                        //         var c = lodash.differenceWith(veriler, state.data, function (o1, o2) {
+                                        //             return o1['id'] === o2['id']
+                                        //         });
+                                        //         var deleted = { deletes: c } //silinenler eklendi
+                                        //         obje.push(deleted)
+
+                                        //         //gormek için ekrana yazdırdım
+                                        //         console.log(obje);
+                                        //         console.log(obje[0]);//insert listesi
+                                        //         console.log(obje[1]);//update listesi
+                                        //         console.log(obje[2]);//delete listesi
+
+                                        //         //veritabanına gönderme kısmı
+                                        //         axios.post('http://localhost:3004/dersDuzenle', obje)
+                                        //             .then(response => {
+                                        //                 console.log(response);
+                                        //             }).catch(err => console.log(err))
+
+                                        //             //window.location.reload(true); //sayfanın yenilenmesi gerekiyor
+                                        //             history.push('/dashboard/dersduzenle',true) 
+                                        //             history.go(0)
+                                                   
+                                         
+                                        //         dialogClose()
+                                        //     }
+                                           
+                                        // }
+                                        >
                                             Kaydet
                                         </Button>
                                     </DialogActions>

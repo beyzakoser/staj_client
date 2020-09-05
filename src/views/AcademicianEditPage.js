@@ -13,7 +13,6 @@ import BarChartIcon from "@material-ui/icons/BarChart";
 import clsx from "clsx";
 import Typography from "@material-ui/core/Typography";
 import {makeStyles, useTheme} from '@material-ui/core/styles';
-
 import {
     BrowserRouter as Router,
     Switch,
@@ -42,12 +41,14 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-
+import {useHistory} from "react-router";
+import axios from 'axios'
+import lodash from 'lodash'
+var veriler = [{},];
 export default function AcademicianEditPage(){
 
     const drawerWidth = 270;
-
-
+   
     const useStyles = makeStyles((theme) => ({
         root: {
             display: 'flex',
@@ -169,7 +170,34 @@ export default function AcademicianEditPage(){
     const theme = useTheme();
     const fullScreenV = useMediaQuery(theme.breakpoints.down('sm'));
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    const [state, setState] = React.useState({
+        columns: [
+            { title: 'Unvan', field: 'unvan' },
+            { title: 'Adı', field: 'ad' },
+            { title: 'Soyadı', field: 'soyad' },
+            { title: 'Statü', field: 'statu' },
+        ],
+        data: [
+            { unvan:'',ad: '', soyad: '', statu:'' },
+        ],
+    });
+    
+    React.useEffect(() => {
+        axios.get('http://localhost:3004/ogretimElemanlari').then(response => {
+            veriler = response.data
+            setState({
+                columns: [
+                    { title: 'Unvan', field: 'unvan' },
+                    { title: 'Adı', field: 'ad' },
+                    { title: 'Soyadı', field: 'soyad' },
+                    { title: 'Statü', field: 'statu' },
 
+                ],
+                data: response.data,
+            })
+            
+        }).catch(err => console.log(err));
+    }, []);
     const handleClickOpenV = () => {
         setOpenV(true);
     };
@@ -195,22 +223,7 @@ export default function AcademicianEditPage(){
         setOpen(false);
     };
     const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
-    const [state, setState] = React.useState({
-        columns: [
-            { title: 'Adı', field: 'adi' },
-            { title: 'Soyadı', field: 'soyadi' },
-            { title: 'Statü', field: 'statu' },
-        ],
-        data: [
-            { adi: 'Mehmet', soyadi: 'Baran', statu:"?", },
-            {
-                adi: 'Zerya Betül',
-                soyadi: 'Baran',
-                statu: "?",
-            },
-        ],
-    });
+    const history = useHistory();
 
     return (
         <div className={classes.root}>
@@ -352,7 +365,59 @@ export default function AcademicianEditPage(){
                                         <Button autoFocus variant="outlined" onClick={dialogClose} color="primary">
                                             İptal
                                         </Button>
-                                        <Button variant="outlined" onClick={dialogClose} color="primary" autoFocus>
+                                        <Button variant="outlined" 
+                                        //onClick={dialogClose} 
+                                        color="primary" autoFocus
+                                        //onClick={
+                                            // () => {
+                                            //     //insert kısmı
+                                            //     var eklenenler = []
+                                            //     var guncellenecek = []
+                                            
+                                            //     Object.keys(state.data).forEach(key => {
+                                            //         if ((state.data)[key].id === undefined) {
+                                            //             eklenenler.push((state.data)[key])
+                                            //         }
+                                            //     })
+                                            //     var obje = [{ inserts: eklenenler }]
+
+                                            //     //update kısmı
+                                            //     var serialized_Items_Prev = veriler.map(i => JSON.stringify(i));
+                                            //     var degisenler = (state.data).filter(i => !serialized_Items_Prev.includes(JSON.stringify(i)));
+                                            //     guncellenecek = degisenler.filter((e) => !(obje[0].inserts).includes(e));
+                                            //     var updated = { updates: guncellenecek } //update olanlar eklendi.
+                                            //     obje.push(updated)
+
+                                            //     //delete kısmı
+                                            //     var c = lodash.differenceWith(veriler, state.data, function (o1, o2) {
+                                            //         return o1['id'] === o2['id']
+                                            //     });
+                                            //     var deleted = { deletes: c } //silinenler eklendi
+                                            //     obje.push(deleted)
+
+                                            //     //gormek için ekrana yazdırdım
+                                            //     console.log(obje);
+                                            //     console.log(obje[0]);//insert listesi
+                                            //     console.log(obje[1]);//update listesi
+                                            //     console.log(obje[2]);//delete listesi
+
+                                            //     //veritabanına gönderme kısmı
+                                            //     axios.post('http://localhost:3004/akademisyenDuzenle', obje)
+                                            //         .then(response => {
+                                            //             console.log(response);
+                                            //         }).catch(err => console.log(err))
+
+                                            //         //window.location.reload(true); //sayfanın yenilenmesi gerekiyor
+                                                   
+                                            //        history.push('/dashboard/akademisyenduzenle',true) 
+                                            //        history.go(0) //sayfayı yenilemek için
+                                                   
+                                         
+                                            //     dialogClose()
+                                            // }
+                                           
+                                        //}
+                                        >
                                             Kaydet
                                         </Button>
                                     </DialogActions>

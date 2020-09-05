@@ -13,7 +13,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import Copyright from '../components/Copyright';
-
 import ApplicationLessonTable from '../components/ApplicationLessonTable'
 import MaterialTable from "material-table";
 import axios from 'axios'
@@ -21,7 +20,6 @@ import axios from 'axios'
 export default function Application() {
   /*Bu kısım açılır buton içindir*/
   const [open, setOpen] = React.useState(false);
-
   const [FirstName, setFirstName] = React.useState("");
   const [LastName, setLastName] = React.useState("");
   const [Mail, setMail] = React.useState("");
@@ -47,8 +45,8 @@ export default function Application() {
         data: [
             { dersKodu: 'MAT207', dersAdi: 'Calculus I', kredi:"5", akts:"7", basariNotu:"BA", },
             { dersKodu: 'MAT208', dersAdi: 'Calculus II', kredi:"5", akts:"7", basariNotu:"AA", },
-            { dersKodu: 'FZ101', dersAdi: 'Physic I', kredi:"5", akts:"7", basariNotu:"CC", },
-            { dersKodu: 'FZ102', dersAdi: 'Physic II', kredi:"5", akts:"7", basariNotu:"CB", },
+            // { dersKodu: 'FZ101', dersAdi: 'Physic I', kredi:"5", akts:"7", basariNotu:"CC", },
+            // { dersKodu: 'FZ102', dersAdi: 'Physic II', kredi:"5", akts:"7", basariNotu:"CB", },
         ],
     });
 
@@ -60,18 +58,20 @@ export default function Application() {
             { dersKodu: 'MAT208', dersAdi: 'Calculus II', kredi:"5", akts:"7", basariNotu:"AA", },
         ]
     }
- const person = {
-    ogrenciAd: FirstName,
-    ogrenciSoyad: LastName,
-    ogrenciMail:Mail,
-    universiteAdi: University,
-    ogrenciFakulte:Faculty,
-    girisYil:Year,
-    ogrenciBolum:Department,
-    basvuruTur:ApplicationType,
-    //dersKodu: 'MAT207', dersAdi: 'Calculus I', kredi:"5", akts:"7", basariNotu:"BA",fsmvuBasariNotu:"AA"
-    //dersler:state.data
-  }
+  //  const date = new Date();
+  //  var dateTime = date.toISOString().slice(0, 10);
+//  const person = {
+//     ogrenciAd: FirstName,
+//     ogrenciSoyad: LastName,
+//     ogrenciMail:Mail,
+//     universiteAdi: University,
+//     ogrenciFakulte:Faculty,
+//     girisYil:Year,
+//     ogrenciBolum:Department,
+//     basvuruTur:ApplicationType,
+//     talepTarih: dateTime,
+//     ogrencidersleri:state.data
+//   }
 
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -278,12 +278,12 @@ export default function Application() {
                              <Button variant="outlined" 
                              //onClick={handleClose} 
                              onClick={ 
-                                () => {
-                                //console.log(person);
-                                axios.post('http://localhost:3004/basvuru', person)
-                                .catch(err => console.log(err))
+                                // () => {
+                                // //console.log(person);
+                                // axios.post('http://localhost:3004/basvuru', person)
+                                // .catch(err => console.log(err))
                                 handleClose()
-                                }
+                                //}
                                 
                               }
                              color="primary" autoFocus>

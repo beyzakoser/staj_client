@@ -180,7 +180,7 @@ export default function ApplicationReviewPage(){
         setOpen(false);
     };
 
-    console.log(history.location.state.applicationId)
+    //console.log(history.location.state.applicationId)
     return(
         <div className={classes.root}>
             <CssBaseline />
