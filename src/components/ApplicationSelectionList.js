@@ -52,7 +52,7 @@ export default function ApplicationSelectionList() {
         //console.log(response.data);
         setRows(veriler)
     }).catch(err => console.log(err));
-}, []);
+}, [rows]);
 
 
     const handleChangePage = (event, newPage) => {
@@ -66,7 +66,9 @@ export default function ApplicationSelectionList() {
     function returnButton(id) {
 
         return(
-            <Button onClick={ () => {history.push('/dashboard/basvuruincele',{isAuthanticated:true, applicationId:id})} } id={id} style={{height:'60px'}} variant="contained" color="primary">
+            <Button onClick={ () => {
+                history.push('/dashboard/basvuruincele',{isAuthanticated:true, applicationId:id})} } 
+                id={id} style={{height:'60px'}} variant="contained" color="primary">
                 Başvuru Detay
             </Button>
         );

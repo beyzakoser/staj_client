@@ -195,6 +195,7 @@ export default function AcademicianEditPage(){
                 ],
                 data: response.data,
             })
+
             
         }).catch(err => console.log(err));
     }, []);
@@ -368,55 +369,55 @@ export default function AcademicianEditPage(){
                                         <Button variant="outlined" 
                                         //onClick={dialogClose} 
                                         color="primary" autoFocus
-                                        //onClick={
-                                            // () => {
-                                            //     //insert kısmı
-                                            //     var eklenenler = []
-                                            //     var guncellenecek = []
+                                        onClick={
+                                            () => {
+                                                //insert kısmı
+                                                var eklenenler = []
+                                                var guncellenecek = []
                                             
-                                            //     Object.keys(state.data).forEach(key => {
-                                            //         if ((state.data)[key].id === undefined) {
-                                            //             eklenenler.push((state.data)[key])
-                                            //         }
-                                            //     })
-                                            //     var obje = [{ inserts: eklenenler }]
+                                                Object.keys(state.data).forEach(key => {
+                                                    if ((state.data)[key].id === undefined) {
+                                                        eklenenler.push((state.data)[key])
+                                                    }
+                                                })
+                                                var obje = [{ inserts: eklenenler }]
 
-                                            //     //update kısmı
-                                            //     var serialized_Items_Prev = veriler.map(i => JSON.stringify(i));
-                                            //     var degisenler = (state.data).filter(i => !serialized_Items_Prev.includes(JSON.stringify(i)));
-                                            //     guncellenecek = degisenler.filter((e) => !(obje[0].inserts).includes(e));
-                                            //     var updated = { updates: guncellenecek } //update olanlar eklendi.
-                                            //     obje.push(updated)
+                                                //update kısmı
+                                                var serialized_Items_Prev = veriler.map(i => JSON.stringify(i));
+                                                var degisenler = (state.data).filter(i => !serialized_Items_Prev.includes(JSON.stringify(i)));
+                                                guncellenecek = degisenler.filter((e) => !(obje[0].inserts).includes(e));
+                                                var updated = { updates: guncellenecek } //update olanlar eklendi.
+                                                obje.push(updated)
 
-                                            //     //delete kısmı
-                                            //     var c = lodash.differenceWith(veriler, state.data, function (o1, o2) {
-                                            //         return o1['id'] === o2['id']
-                                            //     });
-                                            //     var deleted = { deletes: c } //silinenler eklendi
-                                            //     obje.push(deleted)
+                                                //delete kısmı
+                                                var c = lodash.differenceWith(veriler, state.data, function (o1, o2) {
+                                                    return o1['id'] === o2['id']
+                                                });
+                                                var deleted = { deletes: c } //silinenler eklendi
+                                                obje.push(deleted)
 
-                                            //     //gormek için ekrana yazdırdım
-                                            //     console.log(obje);
-                                            //     console.log(obje[0]);//insert listesi
-                                            //     console.log(obje[1]);//update listesi
-                                            //     console.log(obje[2]);//delete listesi
+                                                //gormek için ekrana yazdırdım
+                                                console.log(obje);
+                                                console.log(obje[0]);//insert listesi
+                                                console.log(obje[1]);//update listesi
+                                                console.log(obje[2]);//delete listesi
 
-                                            //     //veritabanına gönderme kısmı
-                                            //     axios.post('http://localhost:3004/akademisyenDuzenle', obje)
-                                            //         .then(response => {
-                                            //             console.log(response);
-                                            //         }).catch(err => console.log(err))
+                                                //veritabanına gönderme kısmı
+                                                axios.post('http://localhost:3004/akademisyenDuzenle', obje)
+                                                    .then(response => {
+                                                        console.log(response);
+                                                    }).catch(err => console.log(err))
 
-                                            //         //window.location.reload(true); //sayfanın yenilenmesi gerekiyor
+                                                    //window.location.reload(true); //sayfanın yenilenmesi gerekiyor
                                                    
-                                            //        history.push('/dashboard/akademisyenduzenle',true) 
-                                            //        history.go(0) //sayfayı yenilemek için
+                                                   history.push('/dashboard/akademisyenduzenle',true) 
+                                                   history.go(0) //sayfayı yenilemek için
                                                    
                                          
-                                            //     dialogClose()
-                                            // }
+                                                dialogClose()
+                                            }
                                            
-                                        //}
+                                        }
                                         >
                                             Kaydet
                                         </Button>

@@ -93,16 +93,16 @@ export default function SignIn() {
                         color="primary"
                         className={classes.submit}
                         onClick={ () => {history.push('/dashboard',true)} }
-                        onClick={
-                            () => {
-                                const { mail, sifre } = giris
-                                axios.post('http://localhost:3004/giris', { mail, sifre })
-                                    .then(response => {
-                                        console.log(response);
-                                        history.push('/dashboard',response.data)
-                                    }).catch(err => console.log(err))
-                            }
-                        }
+                    //     onClick={
+                    //         () => {
+                    //             const { mail, sifre } = giris
+                    //             axios.post('http://localhost:3004/giris', { mail, sifre })
+                    //                 .then(response => {
+                    //                     console.log(response);
+                    //                     history.push('/dashboard',response.data)
+                    //                 }).catch(err => console.log(err))
+                    //         }
+                    //    }
                     >
                         Giriş Yap
                     </Button>

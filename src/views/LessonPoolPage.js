@@ -27,7 +27,7 @@ import PeopleIcon from "@material-ui/icons/People";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import {PartyMode} from "@material-ui/icons";
-
+import axios from 'axios';
 /*
 const yeniDizi=[
 
@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
         height: 240,
     },
 }));
-
+const dizi=[] 
 export default function LessonPoolPage() {
 
     //This array is main array.
@@ -141,6 +141,20 @@ export default function LessonPoolPage() {
         { term: 'Bahar'},
         { term: 'Yaz',},
     ]);
+    
+React.useEffect(() => {
+    axios.get('http://localhost:3004/ogretimElemanlari').then(response => {
+        for (let i = 0; i < response.data.length; i++) {
+            if(response.data[i].unvan && response.data[i].soyad){
+            dizi.push({ title: response.data[i].unvan+response.data[i].ad+response.data[i].soyad }) 
+            }
+            else{
+                dizi.push({ title: response.data[i].ad})
+            }
+        }
+        setTeachers(dizi) 
+    }).catch(err => console.log(err));
+}, []);
 
     //Subject datas that comes from database.
     const [subjects,setSubjects] = React.useState([
@@ -155,19 +169,25 @@ export default function LessonPoolPage() {
         { name: 'Veri Bilimi2'},
     ]);
 
-    React.useEffect(() => {
-        console.log(subjects)
-        setSubjects([
-            { name: 'Veri Yapıları'},
-        ])
-        console.log(subjects)
-    },[]);
 
 
-    //This loop converts data which comes from database to our format.
-    for (let x = 0; x<subjects.length; x++){
-        ListeElemanlari[x] = {name:subjects[x].name,box:0, selected:false};
-    }
+    React.useEffect(() => { 
+        axios.get('http://localhost:3004/ders').then(response => {
+            console.log(response.data);
+              //response.data veri tabanından gelen ders adlarının olduğu liste
+              for (let i = 0; i < response.data.length; i++) {
+                  subjects.push({ name: response.data[i].dersAd })
+                  //setSubjects({ name: response.data[i].dersAd })
+                  ListeElemanlari[i] = { name: subjects[i].name, box: 0, selected: false };
+              }
+  
+          }).catch(err => console.log(err));
+    
+   }, []);
+    // //This loop converts data which comes from database to our format.
+    // for (let x = 0; x<subjects.length; x++){
+    //     ListeElemanlari[x] = {name:subjects[x].name,box:0, selected:false};
+    // }
 
     const classes = useStyles();
 
@@ -361,7 +381,7 @@ export default function LessonPoolPage() {
                                     id="teacher"
                                     options={teachers}
                                     getOptionLabel={(option) => option.title}
-                                    style={{ width: "18vw", backgroundColor:'white'}}
+                                    style={{ width: "20vw", backgroundColor:'white'}}
                                     onChange={(event, value) => giveValueFromTeacher(value)}
                                     renderInput={(params) => <TextField {...params} label="Öğretim Görevlisi Seçiniz" variant="outlined" />}
                                 /><br/>
