@@ -368,6 +368,16 @@ export default function Application() {
     const [ApplicationType, setApplicationType] = React.useState("");
     const [ApplicationDepartment, setApplicationDepartment] = React.useState("");
 
+    function capital_letter(str) {
+        if (str.length !== 0 && str !== null) {
+            str = str.split(" ");
+            for (var i = 0, x = str.length; i < x; i++) {
+                str[i] = str[i][0].toUpperCase() + str[i].substr(1);
+            }
+            return str.join(" ");
+        }
+    }
+
 
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
@@ -402,13 +412,13 @@ export default function Application() {
             { title: 'Başarı Notu', field: 'basariNotu' },
         ],
         data: [
-            { dersKodu: 'MAT207', dersAdi: 'Calculus I', kredi:"5", akts:"7", basariNotu:"BA", },
-            { dersKodu: 'MAT208', dersAdi: 'Calculus II', kredi:"5", akts:"7", basariNotu:"AA", },
+            { dersKodu: 'MAT207', dersAdi: 'Calculus I', kredi: "5", akts: "7", basariNotu: "BA", },
+            { dersKodu: 'MAT208', dersAdi: 'Calculus II', kredi: "5", akts: "7", basariNotu: "AA", },
             // { dersKodu: 'FZ101', dersAdi: 'Physic I', kredi:"5", akts:"7", basariNotu:"CC", },
             // { dersKodu: 'FZ102', dersAdi: 'Physic II', kredi:"5", akts:"7", basariNotu:"CB", },
         ],
     });
-    
+
     const date = new Date();
     var dateTime = date.toISOString().slice(0, 10);
     const person = {
@@ -425,15 +435,8 @@ export default function Application() {
     }
 
 
-    // const student = {
-    //     name: "Ahmet",
-    //     UniverstyYear: 2012,
-    //     lessons: [
-    //         { derskodu: 'MAT207', dersadi: 'Calculus I', kredi: "5", akts: "7", basarinotu: "BA", },
-    //         { derskodu: 'MAT208', dersadi: 'Calculus II', kredi: "5", akts: "7", basarinotu: "AA", },
-    //     ]
-    // }
 
+    //let veri;
     return (
         <React.Fragment>
             <Container maxWidth="md" style={{ marginTop: "5%", marginBottom: "5vh" }}>
@@ -452,7 +455,10 @@ export default function Application() {
                             fullWidth
                             autoComplete="given-name"
                             onChange={
-                                e => setFirstName(e.target.value)
+                                e => {
+                                     
+                                    setFirstName(capital_letter(e.target.value));
+                                }
                             }
                         />
                     </Grid>
@@ -464,7 +470,12 @@ export default function Application() {
                             label="Soyad"
                             fullWidth
                             autoComplete="family-name"
-                            onChange={e => setLastName(e.target.value)}
+                            onChange={e =>
+                                {
+                                   
+                                    setLastName(capital_letter(e.target.value))
+                                }
+                            }
                         />
                     </Grid>
                     <Grid item xs={12}>
@@ -475,7 +486,7 @@ export default function Application() {
                             label="Mail Adresiniz"
                             fullWidth
                             autoComplete="shipping address-level2"
-                            onChange={e => setMail(e.target.value)}
+                            onChange={e => setMail(e.target.value) }
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -486,7 +497,12 @@ export default function Application() {
                             label="Kayıtlı Olduğunuz Üniversite"
                             fullWidth
                             autoComplete="shipping postal-code"
-                            onChange={e => setUniversity(e.target.value)}
+                            onChange={e => 
+                                {
+                                   
+                                    setUniversity(capital_letter(e.target.value))
+                                }
+                            }
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -497,7 +513,12 @@ export default function Application() {
                             label="Enstitü/Fakülte"
                             fullWidth
                             autoComplete="shipping address-line1"
-                            onChange={e => setFaculty(e.target.value)}
+                            onChange={e => 
+                                {
+                                    
+                                    setFaculty(capital_letter(e.target.value))
+                                }
+                            }
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -508,7 +529,12 @@ export default function Application() {
                             label="Bölüm/Program"
                             fullWidth
                             autoComplete="shipping address-line2"
-                            onChange={e => setDepartment(e.target.value)}
+                            onChange={e =>
+                                {
+                                    
+                                    setDepartment(capital_letter(e.target.value))
+                                }
+                            }
                         />
                     </Grid>
                     <Grid item xs={12} sm={6}>
@@ -517,7 +543,12 @@ export default function Application() {
                             id="university-year"
                             label="Üniversitenize Giriş Yılınız"
                             fullWidth
-                            onChange={e => setYear(e.target.value)}
+                            onChange={e => 
+                                {
+                                    
+                                    setYear(capital_letter(e.target.value))
+                                }
+                            }
                         />
                     </Grid>
                     <Grid item xs={12} sm={6} style={{ marginTop: '2vh' }} >
@@ -633,19 +664,22 @@ export default function Application() {
                              </Button>
                                     <Button variant="outlined"
                                         //onClick={handleClose} 
-                                        
+
                                         onClick={
-                                             () => {
-                                            // //console.log(person);
-                                             axios.post('http://localhost:3004/basvuru', person)
-                                             .catch(err => console.log(err))
-                                            handleClose()
+
+                                            () => {
+                                                // //console.log(person);
+                                                axios.post('http://localhost:3004/basvuru', person).then(response => {
+                                                    console.log(response.data)
+                                                }).catch(err => console.log(err))
+                                                handleClose()
                                             }
+
                                         }
-                                            color="primary" autoFocus>
-                                            Gönder
+                                        color="primary" autoFocus>
+                                        Gönder
                              </Button>
-                         </DialogActions>
+                                </DialogActions>
                             </Dialog>
                         </div>
                     </Grid>

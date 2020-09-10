@@ -158,23 +158,17 @@ React.useEffect(() => {
 
     //Subject datas that comes from database.
     const [subjects,setSubjects] = React.useState([
-        { name: 'Veri Yapıları'},
-        { name: 'Bilgisayar Programlama I'},
-        { name: 'Veri Bilimi',},
-        { name: 'Veri Yapıları1'},
-        { name: 'Bilgisayar Programlama I1'},
-        { name: 'Veri Bilimi1'},
-        { name: 'Veri Yapıları2'},
-        { name: 'Bilgisayar Programlama I2'},
-        { name: 'Veri Bilimi2'},
+        { name: ''},
+
     ]);
 
 
 
     React.useEffect(() => { 
         axios.get('http://localhost:3004/ders').then(response => {
-            console.log(response.data);
+            //console.log(response.data);
               //response.data veri tabanından gelen ders adlarının olduğu liste
+              subjects.pop() // ilk baştaki boşluğu silmesi için
               for (let i = 0; i < response.data.length; i++) {
                   subjects.push({ name: response.data[i].dersAd })
                   //setSubjects({ name: response.data[i].dersAd })

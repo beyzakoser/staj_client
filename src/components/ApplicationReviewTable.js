@@ -37,32 +37,79 @@ export default function ApplicationReviewTable() {
                 fsmvuAkts: '',
             },
          ],
-    })
+    });
     const [dbLessons, setDbLessons] = React.useState({
         lessons: [
             {
-                dersKodu: 'b',
-                grupBilgisi:'b',
-                dersAd: 'b',
-                kredi: 5,
-                akts:5,
+                dersKodu: '',
+                grupBilgisi:'',
+                dersAd: '',
+                kredi: '',
+                akts:'',
 
-            }
-        ]
+            },
+        ],
     });
 
     
     
-React.useEffect(() => {       
-            axios.get(`http://localhost:3004/basvuruIncele/${history.location.state.applicationId}`).then(response => {
-            //veriler=response.data
-            console.log(response.data);
-            //console.log(response.data[2].dersler);
-            //console.log("grubu"+response.data[2].dersler.grupBilgisi);
+// React.useEffect(() => {       
+//     //console.log(history.location.state.applicationId);
+//             axios.get(`http://localhost:3004/universiteAdi/${history.location.state.applicationId}`).then(response => {
+//             //veriler=response.data
+//             console.log(response.data);
+//             //console.log(response.data[2].dersler);
+//             //console.log("grubu"+response.data[2].dersler.grupBilgisi);
 
-            setUniversityInfo(response.data[1].universiteAdi);
+//             //setUniversityInfo(response.data[1].universiteAdi);
 
-            //console.log(dbLessons);
+//             //console.log(dbLessons);
+//             // setState({
+//             //     columns: [
+//             //         { title: universityInfo + ' Dersin Kodu', field: 'dersKodu' },
+//             //         { title: universityInfo + ' Dersin Adı', field: 'dersAdi' },
+//             //         { title: universityInfo + ' Kredi', field: 'kredi', type: 'numeric' },
+//             //         { title: universityInfo + ' AKTS', field: 'akts', type: 'numeric' },
+//             //         { title: universityInfo + ' Başarı Notu', field: 'basariNotu' },
+//             //         { title: 'FSMVU Dersin Kodu', field: 'fsmvuDersKodu' },
+//             //         { title: 'FSMVU Dersin Grubu', field: 'fsmvuDersGrubu' },
+//             //         { title: 'FSMVU Dersin Adı', field: 'fsmvuDersinAdi' },
+//             //         { title: 'FSMVU Kredi', field: 'fsmvuKredi', type: 'numeric' },
+//             //         { title: 'FSMVU AKTS', field: 'fsmvuAkts', type: 'numeric' },
+//             //         { title: 'FSMVU Başarı Notu', field: 'fsmvuBasariNotu' },
+//             //     ],
+//             //     data:response.data[0] //intibağı yapılması istenen dersler
+
+                
+//             // })
+//             // setDbLessons({
+//             //     lessons:response.data[2],
+//             // })
+//         }).catch(err => console.log(err));
+        
+//    }, []);
+//    React.useEffect(() => {       
+//             axios.get(`http://localhost:3004/mufredatDersleriListele`).then(response => {
+          
+//             console.log(response.data);
+
+//         }).catch(err => console.log(err));
+        
+//    }, []);
+
+React.useEffect(() => {  
+    axios.all([
+    axios.get(`http://localhost:3004/basvuruIncele/${history.location.state.applicationId}`),
+    axios.get(`http://localhost:3004/universiteAdi/${history.location.state.applicationId}`),
+     axios.get("http://localhost:3004/mufredatDersleriListele")
+])
+.then( axios.spread((...responses) => {
+    //console.log(responses[0].data); //dersler
+    // console.log(responses[1].data); //uniAdi
+     console.log(responses); //mufredatDersleri
+    
+            setUniversityInfo(responses[1].data.universiteAdi);
+
             setState({
                 columns: [
                     { title: universityInfo + ' Dersin Kodu', field: 'dersKodu' },
@@ -77,17 +124,17 @@ React.useEffect(() => {
                     { title: 'FSMVU AKTS', field: 'fsmvuAkts', type: 'numeric' },
                     { title: 'FSMVU Başarı Notu', field: 'fsmvuBasariNotu' },
                 ],
-                data:response.data[0] //intibağı yapılması istenen dersler
+                data:responses[0].data //intibağı yapılması istenen dersler
 
                 
             })
             setDbLessons({
-                lessons:response.data[2],
-            })
-        }).catch(err => console.log(err));
+                lessons:responses[2].data,
+            }) 
         
-   }, [universityInfo]);
-  
+})).catch(err => console.log(err));
+
+}, [universityInfo],[dbLessons]);
 
 //bu kısımdaki değişken adlarını sonradan değiştirmeyi unutma
 useEffect(() => {
@@ -102,7 +149,7 @@ useEffect(() => {
         }
         
     }
-});
+}, [state]); //kod şuan bu şekilde de çalışıyor ama normalde bir atama yapılmamıştı
     
 
     return (
