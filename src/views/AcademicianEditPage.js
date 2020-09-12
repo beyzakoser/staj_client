@@ -176,21 +176,25 @@ export default function AcademicianEditPage(){
             { title: 'Adı', field: 'ad' },
             { title: 'Soyadı', field: 'soyad' },
             { title: 'Statü', field: 'statu' },
+            { title: 'Bölüm', field: 'bolumogretimelemani.bolum.bolumAdi' },
+            //{ title: 'Bölüm', field: 'bolumogretimelemani[0].bolum.bolumAdi' },
         ],
         data: [
-            { unvan:'',ad: '', soyad: '', statu:'' },
+            { unvan:'',ad: '', soyad: '', statu:'',},
         ],
     });
     
     React.useEffect(() => {
         axios.get('http://localhost:3004/ogretimElemanlari').then(response => {
             veriler = response.data
+            console.log(veriler);
             setState({
                 columns: [
                     { title: 'Unvan', field: 'unvan' },
                     { title: 'Adı', field: 'ad' },
                     { title: 'Soyadı', field: 'soyad' },
                     { title: 'Statü', field: 'statu' },
+                    { title: 'Bölüm', field: 'bolumogretimelemani.bolum.bolumAdi' },
 
                 ],
                 data: response.data,
@@ -401,6 +405,7 @@ export default function AcademicianEditPage(){
                                                 console.log(obje[0]);//insert listesi
                                                 console.log(obje[1]);//update listesi
                                                 console.log(obje[2]);//delete listesi
+                                                //console.log(state.data);
 
                                                 //veritabanına gönderme kısmı
                                                 axios.post('http://localhost:3004/akademisyenDuzenle', obje)
@@ -410,8 +415,8 @@ export default function AcademicianEditPage(){
 
                                                     //window.location.reload(true); //sayfanın yenilenmesi gerekiyor
                                                    
-                                                   history.push('/dashboard/akademisyenduzenle',true) 
-                                                   history.go(0) //sayfayı yenilemek için
+                                                   //history.push('/dashboard/akademisyenduzenle',true) 
+                                                   //history.go(0) //sayfayı yenilemek için
                                                    
                                          
                                                 dialogClose()

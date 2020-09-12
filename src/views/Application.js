@@ -369,13 +369,15 @@ export default function Application() {
     const [ApplicationDepartment, setApplicationDepartment] = React.useState("");
 
     function capital_letter(str) {
-        if (str.length !== 0 && str !== null) {
+        console.log(str);
+        if (str) {
             str = str.split(" ");
+            if (str !=="" && str !==null) {
             for (var i = 0, x = str.length; i < x; i++) {
                 str[i] = str[i][0].toUpperCase() + str[i].substr(1);
             }
             return str.join(" ");
-        }
+        }}
     }
 
 
@@ -431,7 +433,8 @@ export default function Application() {
         ogrenciBolum: Department,
         basvuruTur: ApplicationType,
         talepTarih: dateTime,
-        ogrencidersleri: state.data
+        ogrencidersleri: state.data,
+        basvurduguBolum:ApplicationDepartment
     }
 
 

@@ -51,52 +51,10 @@ export default function ApplicationReviewTable() {
         ],
     });
 
-    
-    
-// React.useEffect(() => {       
-//     //console.log(history.location.state.applicationId);
-//             axios.get(`http://localhost:3004/universiteAdi/${history.location.state.applicationId}`).then(response => {
-//             //veriler=response.data
-//             console.log(response.data);
-//             //console.log(response.data[2].dersler);
-//             //console.log("grubu"+response.data[2].dersler.grupBilgisi);
-
-//             //setUniversityInfo(response.data[1].universiteAdi);
-
-//             //console.log(dbLessons);
-//             // setState({
-//             //     columns: [
-//             //         { title: universityInfo + ' Dersin Kodu', field: 'dersKodu' },
-//             //         { title: universityInfo + ' Dersin Adı', field: 'dersAdi' },
-//             //         { title: universityInfo + ' Kredi', field: 'kredi', type: 'numeric' },
-//             //         { title: universityInfo + ' AKTS', field: 'akts', type: 'numeric' },
-//             //         { title: universityInfo + ' Başarı Notu', field: 'basariNotu' },
-//             //         { title: 'FSMVU Dersin Kodu', field: 'fsmvuDersKodu' },
-//             //         { title: 'FSMVU Dersin Grubu', field: 'fsmvuDersGrubu' },
-//             //         { title: 'FSMVU Dersin Adı', field: 'fsmvuDersinAdi' },
-//             //         { title: 'FSMVU Kredi', field: 'fsmvuKredi', type: 'numeric' },
-//             //         { title: 'FSMVU AKTS', field: 'fsmvuAkts', type: 'numeric' },
-//             //         { title: 'FSMVU Başarı Notu', field: 'fsmvuBasariNotu' },
-//             //     ],
-//             //     data:response.data[0] //intibağı yapılması istenen dersler
-
-                
-//             // })
-//             // setDbLessons({
-//             //     lessons:response.data[2],
-//             // })
-//         }).catch(err => console.log(err));
-        
-//    }, []);
-//    React.useEffect(() => {       
-//             axios.get(`http://localhost:3004/mufredatDersleriListele`).then(response => {
-          
-//             console.log(response.data);
-
-//         }).catch(err => console.log(err));
-        
-//    }, []);
-
+    // const intibakTamamla=[{
+    //     basariNotu:state.data.basariNotu,
+    //     fsmvuDersId:Sifre
+    // },]
 React.useEffect(() => {  
     axios.all([
     axios.get(`http://localhost:3004/basvuruIncele/${history.location.state.applicationId}`),
@@ -150,7 +108,10 @@ useEffect(() => {
         
     }
 }, [state]); //kod şuan bu şekilde de çalışıyor ama normalde bir atama yapılmamıştı
-    
+      
+
+
+
 
     return (
         <MaterialTable
