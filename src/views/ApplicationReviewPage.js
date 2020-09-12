@@ -17,9 +17,11 @@ import Paper from "@material-ui/core/Paper";
 import ApplicationReviewTable from "../components/ApplicationReviewTable";
 import Box from "@material-ui/core/Box";
 import Copyright from "../components/Copyright";
-import React from "react";
-import {useHistory,
-        Link as RouterLink} from "react-router-dom";
+import React, { useEffect } from "react";
+import {
+    useHistory,
+    Link as RouterLink
+} from "react-router-dom";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import DashboardIcon from "@material-ui/icons/Dashboard";
@@ -27,7 +29,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import PeopleIcon from "@material-ui/icons/People";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 import BarChartIcon from "@material-ui/icons/BarChart";
-import {makeStyles, useTheme} from "@material-ui/core/styles";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
@@ -36,14 +38,16 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogActions from "@material-ui/core/DialogActions";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import TextField from '@material-ui/core/TextField';
-
+//import logo from "../logo/FSMVU-TR-5.png";
+import MaterialTable from "material-table";
+import axios from 'axios'
 
 const drawerWidth = 270;
 
 const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
-        backgroundColor:'#f3efec'
+        backgroundColor: '#f3efec'
     },
     toolbar: {
         paddingRight: 24, // keep right padding when drawer closed
@@ -122,7 +126,7 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function ApplicationReviewPage(){
+export default function ApplicationReviewPage() {
     const mainListItems = (
         <div>
             <RouterLink to="/dashboard">
@@ -182,22 +186,141 @@ export default function ApplicationReviewPage(){
         setOpen(false);
     };
 
-    const [applicantInfo, setApplicantInfo] = React.useState( {
-        applicantName: 'Ahmet',
-        applicantSurname: 'Dönmez',
-        applicantUniversityEnterInfo: '1997',
-        applicantToTransfer: 'Bilgisayar Mühendisliği',
-        applicantFromTransfer: 'Elektrik Elektronik Mühendisliği',
-        applicantUniversity: 'Koç Üniversitesi',
-        transferType: 'Yatay Geçiş'
-        }
+    const [applicantInfo, setApplicantInfo] = React.useState({
+        ogrenciAd: '',
+        ogrenciSoyad: '',
+        girisYil: ' ',
+        ogrenciBolum: '',
+        basvurduguBolum: '',
+        universiteAdi: '',
+        basvuruTur: ''
+    }
     )
 
-    console.log(history.location.state.applicationId)
-    return(
+    const [universityInfo, setUniversityInfo] = React.useState("");
+    const [object, setObject] = React.useState({
+        intibakDurumu:1,
+        ogrencidersleri:[{
+            id:'',
+            fsmvuDersId:'',
+            fsmvuBasariNotu:''
+        },
+    ]
+    });
+
+    const [state, setState] = React.useState({
+        columns: [
+            { title: 'Dersin Kodu', field: 'dersKodu' },
+            { title: 'Dersin Adı', field: 'dersAdi' },
+            { title: 'Kredi', field: 'kredi', type: 'numeric' },
+            { title: 'AKTS', field: 'akts', type: 'numeric' },
+            { title: 'Başarı Notu', field: 'basariNotu' },
+            { title: 'FSMVU Dersin Kodu', field: 'fsmvuDersKodu' },
+            { title: 'FSMVU Dersin Grubu', field: 'fsmvuDersGrubu' },
+            { title: 'FSMVU Dersin Adı', field: 'fsmvuDersinAdi' },
+            { title: 'FSMVU Kredi', field: 'fsmvuKredi', type: 'numeric' },
+            { title: 'FSMVU AKTS', field: 'fsmvuAkts', type: 'numeric' },
+            { title: 'FSMVU Başarı Notu', field: 'fsmvuBasariNotu' },
+        ],
+        data: [
+            
+            {
+                id:'',
+                dersKodu: '',
+                dersAdi: ' ',
+                kredi: '',
+                akts: '',
+                basariNotu: '',
+                fsmvuDersKodu: '',
+                fsmvuDersGrubu: '',
+                fsmvuDersinAdi: '',
+                fsmvuKredi: '',
+                fsmvuAkts: '',
+                fsmvuDersId:''
+            },
+            
+        ],
+        intibakDurumu:0,
+        
+    });
+
+    const [dbLessons, setDbLessons] = React.useState({
+        lessons: [
+            {
+                id:'',
+                dersKodu: '',
+                grupBilgisi: '',
+                dersAd: '',
+                kredi: '',
+                akts: '',
+
+            },
+        ],
+    });
+    React.useEffect(() => {
+        axios.all([
+            axios.get(`http://localhost:3004/basvuruIncele/${history.location.state.applicationId}`),
+            axios.get(`http://localhost:3004/universiteAdi/${history.location.state.applicationId}`),
+            axios.get("http://localhost:3004/mufredatDersleriListele")
+        ])
+            .then(axios.spread((...responses) => {
+                console.log(responses);
+                setApplicantInfo(responses[1].data)
+                setUniversityInfo(responses[1].data.universiteAdi);
+
+                setState({
+                    columns: [
+                        { title: universityInfo + ' Dersin Kodu', field: 'dersKodu' },
+                        { title: universityInfo + ' Dersin Adı', field: 'dersAdi' },
+                        { title: universityInfo + ' Kredi', field: 'kredi', type: 'numeric' },
+                        { title: universityInfo + ' AKTS', field: 'akts', type: 'numeric' },
+                        { title: universityInfo + ' Başarı Notu', field: 'basariNotu' },
+                        { title: 'FSMVU Dersin Kodu', field: 'fsmvuDersKodu' },
+                        { title: 'FSMVU Dersin Grubu', field: 'fsmvuDersGrubu' },
+                        { title: 'FSMVU Dersin Adı', field: 'fsmvuDersinAdi' },
+                        { title: 'FSMVU Kredi', field: 'fsmvuKredi', type: 'numeric' },
+                        { title: 'FSMVU AKTS', field: 'fsmvuAkts', type: 'numeric' },
+                        { title: 'FSMVU Başarı Notu', field: 'fsmvuBasariNotu' },
+                    ],
+                    data: responses[0].data, //intibağı yapılması istenen dersler
+                    intibakDurumu:0
+
+
+                })
+   
+                setDbLessons({
+                    lessons: responses[2].data,
+                })
+
+
+            })).catch(err => console.log(err));
+
+    }, [universityInfo], [dbLessons], [applicantInfo],);
+
+
+    useEffect(() => {
+        for (let i = 0; i < state.data.length; i++) {
+            for (let k = 0; k < dbLessons.lessons.length; k++) {
+                if (state.data[i].fsmvuDersKodu === dbLessons.lessons[k].dersKodu) {
+                    state.data[i].fsmvuDersGrubu = dbLessons.lessons[k].grupBilgisi;
+                    state.data[i].fsmvuDersinAdi = dbLessons.lessons[k].dersAd;
+                    state.data[i].fsmvuAkts = dbLessons.lessons[k].akts;
+                    state.data[i].fsmvuKredi = dbLessons.lessons[k].kredi;
+                    state.data[i].fsmvuDersId = dbLessons.lessons[k].id;
+                }
+            }
+
+        }
+        
+    }, [state]); //kod şuan bu şekilde de çalışıyor ama normalde bir atama yapılmamıştı
+    
+    console.log(state);
+
+
+    return (
         <div className={classes.root}>
             <CssBaseline />
-            <AppBar position="absolute" style={{backgroundColor: "#a5876a"}} className={clsx(classes.appBar, open && classes.appBarShift)}>
+            <AppBar position="absolute" style={{ backgroundColor: "#a5876a" }} className={clsx(classes.appBar, open && classes.appBarShift)}>
                 <Toolbar className={classes.toolbar}>
                     <IconButton
                         edge="start"
@@ -208,7 +331,7 @@ export default function ApplicationReviewPage(){
                     >
                         <MenuIcon />
                     </IconButton>
-                    
+
                     <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
                         FSMVÜ İntibak, Akademisyen ve Ders Yönetim Sistemi
                     </Typography>
@@ -237,68 +360,222 @@ export default function ApplicationReviewPage(){
                 <div className={classes.appBarSpacer} />
                 <Container maxWidth="xl" className={classes.container}>
                     <Grid container spacing={0}>
-                        <Grid xs={6} md={4} style={{marginBottom:'3vh'}}>
+                        <Grid xs={6} md={4} style={{ marginBottom: '3vh' }}>
                             <TextField
-                                style={{backgroundColor:'white', width:'80%'}}
+                                style={{ backgroundColor: 'white', width: '80%' }}
                                 disabled
                                 id="outlined-disabled"
-                                label="Öğrencinin Adı Soyadı" defaultValue={applicantInfo.applicantName + " " + applicantInfo.applicantSurname}
+                                label="Öğrencinin Adı Soyadı" value={applicantInfo.ogrenciAd + " " + applicantInfo.ogrenciSoyad}
                                 variant="outlined"
                             />
                         </Grid>
-                        <Grid xs={6} md={4} style={{marginBottom:'3vh'}}>
+                        <Grid xs={6} md={4} style={{ marginBottom: '3vh' }}>
                             <TextField
-                                style={{backgroundColor:'white', width:'80%'}}
+                                style={{ backgroundColor: 'white', width: '80%' }}
                                 disabled
                                 id="outlined-disabled"
-                                label="Kayıtlı Olduğu Üniversite" defaultValue={applicantInfo.applicantUniversity}
+                                label="Kayıtlı Olduğu Üniversite" value={applicantInfo.universiteAdi}
                                 variant="outlined"
                             />
                         </Grid>
-                        <Grid xs={6} md={4} style={{marginBottom:'3vh'}}>
+                        <Grid xs={6} md={4} style={{ marginBottom: '3vh' }}>
                             <TextField
-                                style={{backgroundColor:'white', width:'80%'}}
+                                style={{ backgroundColor: 'white', width: '80%' }}
                                 disabled
                                 id="outlined-disabled"
-                                label="Kayıtlı Olduğu Bölüm" defaultValue={applicantInfo.applicantFromTransfer}
+                                label="Kayıtlı Olduğu Bölüm" value={applicantInfo.ogrenciBolum}
                                 variant="outlined"
                             />
                         </Grid>
-                        <Grid xs={6} md={4} style={{marginBottom:'5vh'}}>
+                        <Grid xs={6} md={4} style={{ marginBottom: '5vh' }}>
                             <TextField
-                                style={{backgroundColor:'white', width:'80%'}}
+                                style={{ backgroundColor: 'white', width: '80%' }}
                                 disabled
                                 id="outlined-disabled"
-                                label="Geçerli Öğretim Yılı" defaultValue={applicantInfo.applicantUniversityEnterInfo}
+                                label="Geçerli Öğretim Yılı" value={applicantInfo.girisYil}
                                 variant="outlined"
                             />
                         </Grid>
-                        <Grid xs={6} md={4} style={{marginBottom:'5vh'}}>
+                        <Grid xs={6} md={4} style={{ marginBottom: '5vh' }}>
                             <TextField
-                                style={{backgroundColor:'white', width:'80%'}}
+                                style={{ backgroundColor: 'white', width: '80%' }}
                                 disabled
                                 id="outlined-disabled"
-                                label="Başvurduğu Bölüm" defaultValue={applicantInfo.applicantToTransfer}
+                                label="Başvurduğu Bölüm" value={applicantInfo.basvurduguBolum}
                                 variant="outlined"
                             />
                         </Grid>
-                        <Grid xs={6} md={4} style={{marginBottom:'5vh'}}>
+                        <Grid xs={6} md={4} style={{ marginBottom: '5vh' }}>
                             <TextField
-                                style={{backgroundColor:'white', width:'80%'}}
+                                style={{ backgroundColor: 'white', width: '80%' }}
                                 disabled
                                 id="outlined-disabled"
-                                label="Geçiş Türü" defaultValue={applicantInfo.transferType}
+                                label="Geçiş Türü" value={applicantInfo.basvuruTur}
                                 variant="outlined"
                             />
                         </Grid>
                         <Grid item xs={12} lg={12} sm={12} md={12}>
                             <Paper>
-                                <ApplicationReviewTable />
+                                <MaterialTable
+                                    title="İntibak Tablosu"
+                                    columns={[
+                                        {
+                                            title: state.columns[0].title,
+                                            field: 'dersKodu',
+
+                                            cellStyle: {
+
+                                            },
+                                            headerStyle: {
+                                                backgroundColor: '#b07d62',
+                                                color: 'white'
+                                            }
+                                        },
+                                        {
+                                            title: state.columns[1].title,
+                                            field: 'dersAdi',
+                                            headerStyle: {
+                                                backgroundColor: '#b07d62',
+                                                color: 'white'
+                                            }
+                                        },
+                                        {
+                                            title: state.columns[2].title,
+                                            field: 'kredi',
+                                            type: 'numeric',
+                                            headerStyle: {
+                                                backgroundColor: '#b07d62',
+                                                color: 'white'
+                                            }
+                                        },
+                                        {
+                                            title: state.columns[3].title,
+                                            field: 'akts',
+                                            type: 'numeric',
+                                            headerStyle: {
+                                                backgroundColor: '#b07d62',
+                                                color: 'white'
+                                            }
+                                        },
+                                        {
+                                            title: state.columns[4].title,
+                                            field: 'basariNotu',
+                                            headerStyle: {
+                                                backgroundColor: '#b07d62',
+                                                color: 'white'
+                                            }
+                                        },
+                                        {
+                                            title: state.columns[5].title,
+                                            field: 'fsmvuDersKodu',
+                                            headerStyle: {
+                                                backgroundColor: '#85182a',
+                                                color: 'white'
+                                            }
+                                        },
+                                        {
+                                            title: state.columns[6].title,
+                                            field: 'fsmvuDersGrubu',
+                                            headerStyle: {
+                                                backgroundColor: '#85182a',
+                                                color: 'white'
+                                            }
+                                        },
+                                        {
+                                            title: state.columns[7].title,
+                                            field: 'fsmvuDersinAdi',
+                                            headerStyle: {
+                                                backgroundColor: '#85182a',
+                                                color: 'white'
+                                            }
+                                        },
+                                        {
+                                            title: state.columns[8].title,
+                                            field: 'fsmvuKredi',
+                                            type: 'numeric',
+                                            headerStyle: {
+                                                backgroundColor: '#85182a',
+                                                color: 'white'
+                                            }
+                                        },
+                                        {
+                                            title: state.columns[9].title,
+                                            field: 'fsmvuAkts',
+                                            type: 'numeric',
+                                            headerStyle: {
+                                                backgroundColor: '#85182a',
+                                                color: 'white'
+                                            }
+                                        },
+                                        {
+                                            title: state.columns[10].title,
+                                            field: 'fsmvuBasariNotu',
+                                            headerStyle: {
+                                                backgroundColor: '#85182a',
+                                                color: 'white'
+                                            }
+                                        }
+                                    ]}
+                                    data={state.data}
+                                    editable={{
+                                        onRowAdd: (newData) =>
+                                            new Promise((resolve) => {
+                                                setTimeout(() => {
+                                                    resolve();
+                                                    setState((prevState) => {
+                                                        const data = [...prevState.data];
+                                                        data.push(newData);
+                                                        return { ...prevState, data };
+                                                    });
+                                                }, 600);
+                                            }),
+                                        onRowUpdate: (newData, oldData) =>
+                                            new Promise((resolve) => {
+                                                setTimeout(() => {
+                                                    resolve();
+                                                    if (oldData) {
+                                                        setState((prevState) => {
+                                                            const data = [...prevState.data];
+                                                            data[data.indexOf(oldData)] = newData;
+                                                            return { ...prevState, data };
+                                                        });
+                                                    }
+                                                }, 600);
+                                            }),
+                                        onRowDelete: (oldData) =>
+                                            new Promise((resolve) => {
+                                                setTimeout(() => {
+                                                    resolve();
+                                                    setState((prevState) => {
+                                                        const data = [...prevState.data];
+                                                        data.splice(data.indexOf(oldData), 1);
+                                                        return { ...prevState, data };
+                                                    });
+                                                }, 600);
+                                            }),
+                                    }}
+                                    options={{
+                                        rowStyle: {
+
+                                        },
+                                        cellStyle: {
+
+                                        },
+                                        headerStyle: {
+
+                                        }
+                                    }}
+                                />
                             </Paper>
                         </Grid>
-                        <Grid style={{marginTop:'4vh'}} xs={12} lg={12} sm={12} md={12}>
-                            <div style={{float:'right'}}>
-                                <Button variant="contained" color="primary" size="medium" onClick={dialogOpen}>
+                        <Grid style={{ marginTop: '4vh' }} xs={12} lg={12} sm={12} md={12}>
+                            <div style={{ float: 'right' }}>
+                                <Button variant="contained" color="primary" size="medium"
+                                    onClick={
+                                       
+                                    
+                                        dialogOpen
+                                    }>
                                     İntİbakı Tamamla
                                 </Button>
                                 <Dialog
@@ -325,7 +602,7 @@ export default function ApplicationReviewPage(){
                             </div>
                         </Grid>
                     </Grid>
-                    <Box style={{marginTop:'8vh'}} pt={4}>
+                    <Box style={{ marginTop: '8vh' }} pt={4}>
                         <Copyright />
                     </Box>
                 </Container>
