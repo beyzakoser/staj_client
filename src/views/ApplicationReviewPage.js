@@ -189,7 +189,7 @@ export default function ApplicationReviewPage() {
     const [applicantInfo, setApplicantInfo] = React.useState({
         ogrenciAd: '',
         ogrenciSoyad: '',
-        girisYil: ' ',
+        girisYil: '',
         ogrenciBolum: '',
         basvurduguBolum: '',
         universiteAdi: '',
@@ -198,15 +198,15 @@ export default function ApplicationReviewPage() {
     )
 
     const [universityInfo, setUniversityInfo] = React.useState("");
-    const [object, setObject] = React.useState({
-        intibakDurumu:1,
-        ogrencidersleri:[{
-            id:'',
-            fsmvuDersId:'',
-            fsmvuBasariNotu:''
-        },
-    ]
-    });
+    // const [object, setObject] = React.useState({
+    //     intibakDurumu: 1,
+    //     ogrencidersleri: [{
+    //         id: '',
+    //         fsmvuDersId: '',
+    //         fsmvuBasariNotu: ''
+    //     },
+    //     ]
+    // });
 
     const [state, setState] = React.useState({
         columns: [
@@ -221,33 +221,35 @@ export default function ApplicationReviewPage() {
             { title: 'FSMVU Kredi', field: 'fsmvuKredi', type: 'numeric' },
             { title: 'FSMVU AKTS', field: 'fsmvuAkts', type: 'numeric' },
             { title: 'FSMVU Başarı Notu', field: 'fsmvuBasariNotu' },
+
         ],
         data: [
-            
+
             {
-                id:'',
+                id: '',
                 dersKodu: '',
                 dersAdi: ' ',
                 kredi: '',
                 akts: '',
                 basariNotu: '',
+                fsmvuDersId: '',
                 fsmvuDersKodu: '',
                 fsmvuDersGrubu: '',
                 fsmvuDersinAdi: '',
                 fsmvuKredi: '',
                 fsmvuAkts: '',
-                fsmvuDersId:''
+
             },
-            
+
         ],
-        intibakDurumu:0,
-        
+
+
     });
 
     const [dbLessons, setDbLessons] = React.useState({
         lessons: [
             {
-                id:'',
+                id: '',
                 dersKodu: '',
                 grupBilgisi: '',
                 dersAd: '',
@@ -257,6 +259,7 @@ export default function ApplicationReviewPage() {
             },
         ],
     });
+
     React.useEffect(() => {
         axios.all([
             axios.get(`http://localhost:3004/basvuruIncele/${history.location.state.applicationId}`),
@@ -265,40 +268,41 @@ export default function ApplicationReviewPage() {
         ])
             .then(axios.spread((...responses) => {
                 console.log(responses);
+                //console.log(responses[0].data);
                 setApplicantInfo(responses[1].data)
                 setUniversityInfo(responses[1].data.universiteAdi);
-
-                setState({
-                    columns: [
-                        { title: universityInfo + ' Dersin Kodu', field: 'dersKodu' },
-                        { title: universityInfo + ' Dersin Adı', field: 'dersAdi' },
-                        { title: universityInfo + ' Kredi', field: 'kredi', type: 'numeric' },
-                        { title: universityInfo + ' AKTS', field: 'akts', type: 'numeric' },
-                        { title: universityInfo + ' Başarı Notu', field: 'basariNotu' },
-                        { title: 'FSMVU Dersin Kodu', field: 'fsmvuDersKodu' },
-                        { title: 'FSMVU Dersin Grubu', field: 'fsmvuDersGrubu' },
-                        { title: 'FSMVU Dersin Adı', field: 'fsmvuDersinAdi' },
-                        { title: 'FSMVU Kredi', field: 'fsmvuKredi', type: 'numeric' },
-                        { title: 'FSMVU AKTS', field: 'fsmvuAkts', type: 'numeric' },
-                        { title: 'FSMVU Başarı Notu', field: 'fsmvuBasariNotu' },
-                    ],
-                    data: responses[0].data, //intibağı yapılması istenen dersler
-                    intibakDurumu:0
+                //for (let i = 0; i < responses[0].data.length; i++) {
+                    setState({
+                        columns: [
+                            { title: universityInfo + ' Dersin Kodu', field: 'dersKodu' },
+                            { title: universityInfo + ' Dersin Adı', field: 'dersAdi' },
+                            { title: universityInfo + ' Kredi', field: 'kredi', type: 'numeric' },
+                            { title: universityInfo + ' AKTS', field: 'akts', type: 'numeric' },
+                            { title: universityInfo + ' Başarı Notu', field: 'basariNotu' },
+                            { title: 'FSMVU Dersin Kodu', field: 'fsmvuDersKodu' },
+                            { title: 'FSMVU Dersin Grubu', field: 'fsmvuDersGrubu' },
+                            { title: 'FSMVU Dersin Adı', field: 'fsmvuDersinAdi' },
+                            { title: 'FSMVU Kredi', field: 'fsmvuKredi', type: 'numeric' },
+                            { title: 'FSMVU AKTS', field: 'fsmvuAkts', type: 'numeric' },
+                            { title: 'FSMVU Başarı Notu', field: 'fsmvuBasariNotu' },
 
 
-                })
-   
+                        ],
+                        data: responses[0].data//intibağı yapılması istenen dersler
+
+                    })
+                //}
                 setDbLessons({
                     lessons: responses[2].data,
                 })
 
-
             })).catch(err => console.log(err));
 
-    }, [universityInfo], [dbLessons], [applicantInfo],);
+    }, [universityInfo], [applicantInfo], [dbLessons]);
 
-
+    //console.log(state.data);
     useEffect(() => {
+
         for (let i = 0; i < state.data.length; i++) {
             for (let k = 0; k < dbLessons.lessons.length; k++) {
                 if (state.data[i].fsmvuDersKodu === dbLessons.lessons[k].dersKodu) {
@@ -307,15 +311,48 @@ export default function ApplicationReviewPage() {
                     state.data[i].fsmvuAkts = dbLessons.lessons[k].akts;
                     state.data[i].fsmvuKredi = dbLessons.lessons[k].kredi;
                     state.data[i].fsmvuDersId = dbLessons.lessons[k].id;
+
+                    // state.data[i].fsmvuders.id = dbLessons.lessons[k].id
+                    //if (state.data[i].fsmvuders.fsmvuDersId === dbLessons.lessons[k].id) {
+
+                    //}
+
                 }
             }
 
         }
-        
-    }, [state]); //kod şuan bu şekilde de çalışıyor ama normalde bir atama yapılmamıştı
-    
-    console.log(state);
 
+    }, [state]); //kod şuan bu şekilde de çalışıyor ama normalde bir atama yapılmamıştı
+
+    // useEffect( () => {
+    //     //bu kısım frontend tarafında eklenmemeli sanırım böyle OLMAYACAK
+    //                     if(applicantInfo.intibakDurumu === 1){ //intibak tamamlanmış ise 
+    //                     //gelen dersin id sine göre state.data içerisini doldurman gerekli ekrandaki tablonun değişmesi çin
+    //                     for (let i = 0; i < state.data.length; i++) {
+    //                         for (let k = 0; k < dbLessons.lessons.length; k++) {
+    //                             if(state.data[i].fsmvuDersId ){ //eğer fsmvudersid adında bir değişken var ise
+    //                                 if (state.data[i].fsmvuDersId === dbLessons.lessons[k].id) {
+    //                                     state.data[i].fsmvuDersKodu = dbLessons.lessons[k].dersKodu;
+    //                                     state.data[i].fsmvuDersGrubu = dbLessons.lessons[k].grupBilgisi;
+    //                                     state.data[i].fsmvuDersinAdi = dbLessons.lessons[k].dersAd;
+    //                                     state.data[i].fsmvuAkts = dbLessons.lessons[k].akts;
+    //                                     state.data[i].fsmvuKredi = dbLessons.lessons[k].kredi;
+    //                                 }
+
+    //                             }
+
+    //                         }
+
+    //                     }
+
+    //                 }
+    // },[dbLessons]);
+    let gonderilecekObje = [{}]
+    gonderilecekObje = { intibakDurumu: 1, ogrencidersleri: state.data, id: history.location.state.applicationId }
+    //console.log("state.data");
+    console.log(state.data);
+    // console.log("dbLessons.lessons");
+    //console.log(dbLessons.lessons);
 
     return (
         <div className={classes.root}>
@@ -466,6 +503,7 @@ export default function ApplicationReviewPage() {
                                             }
                                         },
                                         {
+
                                             title: state.columns[5].title,
                                             field: 'fsmvuDersKodu',
                                             headerStyle: {
@@ -572,8 +610,8 @@ export default function ApplicationReviewPage() {
                             <div style={{ float: 'right' }}>
                                 <Button variant="contained" color="primary" size="medium"
                                     onClick={
-                                       
-                                    
+
+
                                         dialogOpen
                                     }>
                                     İntİbakı Tamamla
@@ -594,7 +632,17 @@ export default function ApplicationReviewPage() {
                                         <Button autoFocus variant="outlined" onClick={dialogClose} color="primary">
                                             İptal
                                         </Button>
-                                        <Button variant="outlined" onClick={dialogClose} color="primary" autoFocus>
+                                        <Button variant="outlined" onClick={
+                                            () => {
+
+
+                                                axios.put('http://localhost:3004/intibakTamamla', gonderilecekObje).then(response => {
+                                                    console.log(response)
+                                                }).catch(err => console.log(err))
+                                                dialogClose()
+                                            }
+
+                                        } color="primary" autoFocus>
                                             Kaydet
                                         </Button>
                                     </DialogActions>
